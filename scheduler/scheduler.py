@@ -82,7 +82,7 @@ def create_runner_job(
     )
 
     pod_spec = client.V1PodSpec(
-        restart_policy="Never",
+        restart_policy="Never",   # job 이 재시작 시킴 
         containers=[container],
     )
 
@@ -94,6 +94,7 @@ def create_runner_job(
     job_spec = client.V1JobSpec(
         template=pod_template,
         backoff_limit=1,  # 실패 시 재시도 횟수
+        active_deadline_seconds=30,
     )
 
     job = client.V1Job(

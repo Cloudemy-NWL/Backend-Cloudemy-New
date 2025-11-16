@@ -37,7 +37,7 @@ spec:
             - name: K8S_NAMESPACE
               value: "default"
             - name: RUNNER_IMAGE
-              value: "cloudemy/runner:latest"  # ← 네 runner 이미지 이름
+              value: withya61/cloudemy-runner:latest
 
             # 내부 콜백 URL (Runner → Backend)
             - name: BACKEND_INTERNAL_URL
