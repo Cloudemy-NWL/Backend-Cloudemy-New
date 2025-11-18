@@ -94,7 +94,7 @@ def create_runner_job(
     job_spec = client.V1JobSpec(
         template=pod_template,
         backoff_limit=1,  # 실패 시 재시도 횟수
-        active_deadline_seconds=30,
+        active_deadline_seconds=120,  # 2분
     )
 
     job = client.V1Job(
