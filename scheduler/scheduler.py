@@ -13,7 +13,7 @@ QUEUE_NAME = os.getenv("QUEUE_SUBMISSIONS", "queue:submissions")
 K8S_NAMESPACE = os.getenv("K8S_NAMESPACE", "default")
 
 # runner Job에서 사용할 컨테이너 이미지
-RUNNER_IMAGE = os.getenv("RUNNER_IMAGE", "cloudemy/runner:latest")
+RUNNER_IMAGE = os.getenv("RUNNER_IMAGE", "withya61/cloudemy-runner:latest")
 
 # runner 에 넘길 공통 env 값들 (runner.py와 동일하게 맞춰줌)
 BACKEND_INTERNAL_URL = os.getenv("BACKEND_INTERNAL_URL", "http://backend:8000/internal")

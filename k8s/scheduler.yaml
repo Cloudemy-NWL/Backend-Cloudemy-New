@@ -5,7 +5,7 @@ metadata:
   labels:
     app: scheduler
 spec:
-  replicas: 1  # 스케줄러는 보통 1개만 (동일 작업 중복 방지)
+  replicas: 1
   selector:
     matchLabels:
       app: scheduler
@@ -17,7 +17,7 @@ spec:
       containers:
         - name: scheduler
           image: withya61/cloudemy-scheduler:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             # Redis 큐 설정
             - name: REDIS_URL

@@ -11,7 +11,8 @@ from redis.asyncio import Redis
 # Mongo (전역 연결)
 from app.db import get_db
 
-router = APIRouter(prefix="/submissions", tags=["submissions"])
+router = APIRouter(prefix="/api/submissions", tags=["submissions"])
+
 
 # ====== 공통 ======
 STATUSES = {"QUEUED", "FAILED", "COMPLETED", "TIMEOUT", "FINALIZED"}
