@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY runner/ ./
+COPY . .
 
 RUN if [ -f requirements.txt ]; then \
         pip install --upgrade pip && \
