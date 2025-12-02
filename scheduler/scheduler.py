@@ -16,7 +16,7 @@ K8S_NAMESPACE = os.getenv("K8S_NAMESPACE", "default")
 RUNNER_IMAGE = os.getenv("RUNNER_IMAGE", "cloudemy/runner:latest")
 
 # runner 에 넘길 공통 env 값들 (runner.py와 동일하게 맞춰줌)
-BACKEND_INTERNAL_URL = os.getenv("BACKEND_INTERNAL_URL", "http://backend:8000/internal")
+BACKEND_INTERNAL_URL = os.getenv("BACKEND_INTERNAL_URL", "http://backend:8000/api/internal")
 RESULT_TOKEN = os.getenv("INTERNAL_RESULT_TOKEN", "secret")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")

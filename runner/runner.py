@@ -12,7 +12,7 @@ from openai import OpenAI
 # 환경 변수
 SUBMISSION_ID = os.getenv("SUBMISSION_ID")  # Scheduler가 Job 만들 때 넣어주는 값
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
-BACKEND_INTERNAL_URL = os.getenv("BACKEND_INTERNAL_URL", "http://backend:8000/internal")
+BACKEND_INTERNAL_URL = os.getenv("BACKEND_INTERNAL_URL", "http://backend:8000/api/internal")
 RESULT_TOKEN = os.getenv("INTERNAL_RESULT_TOKEN", "secret")
 
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")

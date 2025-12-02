@@ -48,10 +48,10 @@ spec:
 
             # 내부 콜백 URL (Runner → Backend)
             - name: BACKEND_INTERNAL_URL
-              value: "http://backend:8000/internal"
+              value: "http://backend:8000/api/internal"
 
           envFrom:
-            # Secret 에서 민감 값 가져오기 (INTERNAL_RESULT_TOKEN 등)
+            # Secret 에서 민감 값 가져오기
             - secretRef:
                 name: cloudemy-secret
 ---

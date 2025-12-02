@@ -6,7 +6,7 @@ import os
 
 from app.db import get_db
 
-router = APIRouter(prefix="/internal", tags=["internal"])
+router = APIRouter(prefix="/api/internal", tags=["internal"])
 
 # 보안 토큰 (Runner → Backend 콜백 보호)
 RESULT_TOKEN = os.getenv("INTERNAL_RESULT_TOKEN", "secret")
