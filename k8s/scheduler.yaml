@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: scheduler
-          image: withya61/cloudemy-scheduler:v3
+          image: withya61/cloudemy-scheduler:v4
           imagePullPolicy: Always
           # 컨테이너 시작 시 python /app/scheduler.py 명령 실행
           command: ["python"]
@@ -32,7 +32,7 @@ spec:
             - name: K8S_NAMESPACE
               value: "default"
             - name: RUNNER_IMAGE
-              value: withya61/cloudemy-runner:v3
+              value: withya61/cloudemy-runner:v4
 
             # Runner 가 콜백을 보낼 Backend 주소
             - name: BACKEND_INTERNAL_URL
