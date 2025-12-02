@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: withya61/cloudemy-backend:latest
+          image: withya61/cloudemy-backend:v2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
@@ -44,7 +44,7 @@ spec:
             - name: K8S_NAMESPACE
               value: "default"
             - name: RUNNER_IMAGE
-              value: withya61/cloudemy-runner:latest
+              value: withya61/cloudemy-runner:v2
 
             # 내부 콜백 URL (Runner → Backend)
             - name: BACKEND_INTERNAL_URL
