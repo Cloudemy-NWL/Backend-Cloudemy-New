@@ -21,37 +21,57 @@ RESULT_TOKEN = os.getenv("INTERNAL_RESULT_TOKEN", "secret")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
 
+# ⭐ 로그 추가: 모듈 로드 시 현재 설정 출력
+print(
+    f"[Scheduler] 모듈 로드 완료. "
+    f"REDIS_URL={REDIS_URL}, QUEUE_NAME={QUEUE_NAME}, "
+    f"K8S_NAMESPACE={K8S_NAMESPACE}, RUNNER_IMAGE={RUNNER_IMAGE}, "
+    f"BACKEND_INTERNAL_URL={BACKEND_INTERNAL_URL}, LLM_MODEL={LLM_MODEL}"
+)
+
 
 # Kubernetes 설정 로드
 def init_k8s_client() -> client.BatchV1Api:
+    # ⭐ 로그 추가
+    print("[Scheduler] Kubernetes 클라이언트 초기화 시작")
     if os.getenv("KUBERNETES_SERVICE_HOST"):
         # Pod 안에서 실행되는 경우
+        print("[Scheduler] 인클러스터 환경으로 감지됨. InClusterConfig 사용")
         config.load_incluster_config()
     else:
         # 로컬에서 테스트용
+        print("[Scheduler] 로컬 환경으로 감지됨. kubeconfig 사용")
         config.load_kube_config()
 
+    print("[Scheduler] Kubernetes 클라이언트 초기화 완료")
     return client.BatchV1Api()
 
 
 # Redis에서 작업 하나 꺼내기
 def pop_queue(r: Redis) -> Dict[str, Any] | None:
+    # ⭐ 로그 추가
+    print(f"[Scheduler] Redis 큐에서 작업 대기 중... queue='{QUEUE_NAME}' (최대 5초 블록)")
     item: Tuple[str, str] | None = r.blpop(QUEUE_NAME, timeout=5)
     if not item:
+        # ⭐ 로그 추가
+        print("[Scheduler] 새 작업 없음(타임아웃). 다시 대기")
         return None
 
-    _, raw = item
+    key, raw = item
+    # ⭐ 로그 추가
+    print(f"[Scheduler] Redis에서 작업 수신. key={key}, raw='{raw}'")
 
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as e:
-        print(f"[Scheduler] invalid JSON in queue: {raw} / {e}")
+        print(f"[Scheduler] 큐 데이터 JSON 파싱 실패: raw={raw} / error={e}")
         return None
 
     if "submission_id" not in data:
-        print(f"[Scheduler] missing submission_id in message: {data}")
+        print(f"[Scheduler] submission_id 필드가 없습니다. data={data}")
         return None
 
+    print(f"[Scheduler] 유효한 작업 수신. submission_id={data['submission_id']}")
     return data
 
 
@@ -64,7 +84,7 @@ def create_runner_job(
     safe_id = submission_id.lower().replace("_", "-")
     job_name = f"runner-{safe_id}"[:63]  # k8s 이름 길이 제한
 
-    print(f"[Scheduler] create Job: {job_name} (submission_id={submission_id})")
+    print(f"[Scheduler] Runner Job 생성 시작. job_name={job_name}, submission_id={submission_id}")
 
     # runner 컨테이너 정의
     container = client.V1Container(
@@ -104,38 +124,52 @@ def create_runner_job(
         spec=job_spec,
     )
 
-    batch_api.create_namespaced_job(
-        namespace=K8S_NAMESPACE,
-        body=job,
-    )
+    try:
+        batch_api.create_namespaced_job(
+            namespace=K8S_NAMESPACE,
+            body=job,
+        )
+        # ⭐ 로그 추가
+        print(f"[Scheduler] Runner Job 생성 완료. namespace={K8S_NAMESPACE}, job_name={job_name}")
+    except Exception as e:
+        # ⭐ 로그 추가
+        print(f"[Scheduler] Runner Job 생성 실패. job_name={job_name}, error={e}")
+        raise
 
 
 # 메인 루프
 def main() -> None:
-    print("[Scheduler] start")
+    print("[Scheduler] 시작")
 
     # 1) k8s 클라이언트 준비
     batch_api = init_k8s_client()
 
     # 2) Redis 연결
+    print(f"[Scheduler] Redis 연결 시도. url={REDIS_URL}")  # ⭐ 로그 추가
     r = Redis.from_url(REDIS_URL, decode_responses=True)
+    print("[Scheduler] Redis 연결 성공")  # ⭐ 로그 추가
 
     try:
         while True:
             # 큐에서 작업 하나 가져오기 (없으면 5초 동안 대기)
             msg = pop_queue(r)
             if msg is None:
+                # ⭐ 로그 추가
+                # 너무 시끄럽지 않게 1초 정도 쉬고 다시 대기
                 time.sleep(1)
                 continue
 
             submission_id = msg["submission_id"]
+            print(f"[Scheduler] 새 작업 처리 시작. submission_id={submission_id}")  # ⭐ 로그 추가
 
             try:
                 create_runner_job(batch_api, submission_id)
+                print(f"[Scheduler] Job 생성 성공. submission_id={submission_id}")  # ⭐ 로그 추가
             except Exception as e:
-                print(f"[Scheduler] failed to create Job for {submission_id}: {e}")
+                print(f"[Scheduler] Job 생성 실패. submission_id={submission_id}, error={e}")
 
     finally:
+        print("[Scheduler] Redis 연결 종료")  # ⭐ 로그 추가
         r.close()
 
 
