@@ -36,7 +36,7 @@ spec:
 
             # Runner 가 콜백을 보낼 Backend 주소
             - name: BACKEND_INTERNAL_URL
-              value: "http://backend:8000/internal"
+              value: "http://backend:8000/api/internal"
 
           envFrom:
             # Secret 에서 LLM_API_KEY, INTERNAL_RESULT_TOKEN 가져옴
