@@ -27,3 +27,4 @@ uvloop==0.22.1; sys_platform != "win32"
 watchfiles==1.1.1
 websockets==15.0.1
 kubernetes==26.1.0
+openai>=1.0.0
