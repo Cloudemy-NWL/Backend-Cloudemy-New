@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: scheduler
-          image: withya61/cloudemy-scheduler:v2
+          image: withya61/cloudemy-scheduler:v3
           imagePullPolicy: Always
           env:
             # Redis 큐 설정
@@ -29,7 +29,7 @@ spec:
             - name: K8S_NAMESPACE
               value: "default"
             - name: RUNNER_IMAGE
-              value: withya61/cloudemy-runner:v2
+              value: withya61/cloudemy-runner:v3
 
             # Runner 가 콜백을 보낼 Backend 주소
             - name: BACKEND_INTERNAL_URL

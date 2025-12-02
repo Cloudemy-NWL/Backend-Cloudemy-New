@@ -16,7 +16,8 @@ router = APIRouter(prefix="/api/submissions", tags=["submissions"])
 # ====== 공통 ======
 STATUSES = {"QUEUED", "FAILED", "COMPLETED", "TIMEOUT", "FINALIZED"}
 QUEUE_NAME = os.getenv("QUEUE_SUBMISSIONS", "queue:submissions")
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
+
 
 
 # ====== Pydantic 모델 ======
