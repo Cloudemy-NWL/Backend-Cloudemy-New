@@ -1,0 +1,30 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: job-creator-role
+  namespace: default  # 스케줄러가 있는 네임스페이스
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - delete
+
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: default-sa-job-creator-binding
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: default           # 스케줄러 Pod가 쓰는 ServiceAccount
+    namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: job-creator-role   # 위에서 만든 Role 이름
